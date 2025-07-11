@@ -128,16 +128,22 @@ NoBMais* inserir(NoBMais* raiz, int chave, int rrn) {
 }
 
 int buscarRRN(NoBMais* raiz, int codigo) {
-    NoBMais* atual = raiz;
-    while (!atual->folha)
-        atual = atual->filhos[0]; // Simples (folha)
+     NoBMais* atual = raiz;
 
-    for (int i = 0; i < atual->num_chaves; i++) {
-        if (atual->chaves[i] == codigo)
-            return atual->rrns[i];
+    // Vai até a primeira folha
+    while (!atual->folha)
+        atual = atual->filhos[0];
+
+    // Percorre as folhas encadeadas
+    while (atual) {
+        for (int i = 0; i < atual->num_chaves; i++) {
+            if (atual->chaves[i] == codigo)
+                return atual->rrns[i];
+        }
+        atual = atual->prox;
     }
 
-    return -1;
+    return -1; 
 }
 
 void imprimirOrdem(NoBMais* raiz) {
@@ -157,9 +163,13 @@ int main() {
     Cliente c1 = {1001, "Maria Silva"};
     Cliente c2 = {1005, "João Souza"};
     Cliente c3 = {1003, "Carlos Lima"};
+    Cliente c4 = {1007, "Carlas Lima"};
 
     int r1 = salvarCliente(c1);
     raiz = inserir(raiz, c1.codigo, r1);
+
+    int r4 = salvarCliente(c4);
+    raiz = inserir(raiz, c4.codigo, r4);
 
     int r2 = salvarCliente(c2);
     raiz = inserir(raiz, c2.codigo, r2);
@@ -170,6 +180,10 @@ int main() {
     printf("Busca pelo código 1003:\n");
     int rrnBusca = buscarRRN(raiz, 1003);
     if (rrnBusca != -1) buscarClientePorRRN(rrnBusca);
+
+    printf("Busca pelo código 1007:\n");
+    int rrnBusca1 = buscarRRN(raiz, 1007);
+    if (rrnBusca1 != -1) buscarClientePorRRN(rrnBusca1);
 
     printf("\nListando em ordem:\n");
     imprimirOrdem(raiz);
